@@ -1,20 +1,17 @@
 console.log('background.js');
 
-function createCode(val, callback) {
-  const qrcodeUrl = jrQrcode.getQrBase64(val.trim(), {
-    padding: 0,
-    correctLevel: 1
-  })
-
-  callback && callback(qrcodeUrl)
-}
-
 function handleGenQrcode({ selectionText }, tab) {
-  createCode(selectionText, function(qrcode) {
+  const text = selectionText ? selectionText.trim() : '';
+
+  if (!text) {
     chrome.tabs.sendMessage(tab.id, {
-      text: selectionText,
-      qrcode
+      errMsg: '请选择需要生成二维码的内容'
     })
+    return;
+  }
+
+  chrome.tabs.sendMessage(tab.id, {
+    text
   })
 }
 
